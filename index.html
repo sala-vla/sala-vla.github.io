@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SALA: Semantically Aligned Latent Actions Enable Dual-Axis Scaling of Embodied Foundation Models</title>
+  <meta name="description" content="SALA uses language to align human and robot latent actions without paired data, so egocentric human video can supervise the same action expert that controls the robot, in both pre-training and post-training.">
+  <meta property="og:title" content="SALA: Semantically Aligned Latent Actions">
+  <meta property="og:description" content="Language-aligned latent actions turn egocentric human video into scalable supervision for robot policies.">
+  <meta property="og:image" content="static/images/teaser.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='20' cy='32' r='12' fill='%232736C2'/%3E%3Ccircle cx='44' cy='32' r='12' fill='%23E6730D'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%236B3FA0'/%3E%3C/svg%3E">
+  <link rel="preload" href="static/fonts/Inter-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top" aria-label="SALA home">
+      <span class="brand-dots" aria-hidden="true"><i class="d-robot"></i><i class="d-ours"></i><i class="d-human"></i></span>
+      SALA
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#simulation">Simulation</a>
+      <a href="#real-world">Real World</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#bibtex">BibTeX</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    </div>
+    <div class="container hero-inner">
+      <img class="hero-logo" src="static/images/sharpa-logo.png" alt="Sharpa" width="160" height="32">
+      <h1 class="title">
+        <span class="title-main">SALA</span>
+        <span class="title-sub">Semantically Aligned Latent Actions Enable<br class="br-wide"> Dual-Axis Scaling of Embodied Foundation Models</span>
+      </h1>
+
+      <!-- TODO: replace with the final author list -->
+      <p class="authors">
+        <span>Your Name<sup>*</sup></span>
+        <span>Your Name<sup>*</sup></span>
+        <span>Your Name</span>
+        <span>Your Name</span>
+      </p>
+      <p class="affil">Sharpa &nbsp;·&nbsp; <span class="muted"><sup>*</sup>Equal contribution</span></p>
+
+      <!-- TODO: fill in the links; remove "is-soon" once a link is live -->
+      <div class="links">
+        <a class="btn btn-dark is-soon" href="#" aria-disabled="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h8M9 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Paper <em>soon</em>
+        </a>
+        <a class="btn btn-dark is-soon" href="#" aria-disabled="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 12 4l8 16M7.5 13h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          arXiv <em>soon</em>
+        </a>
+        <a class="btn btn-dark is-soon" href="#" aria-disabled="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z" fill="currentColor"/></svg>
+          Code <em>soon</em>
+        </a>
+        <a class="btn btn-light" href="#bibtex">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4H8c0 2 1 3 3 3v2c-3 0-4-2-4-5zm7 0h4v4h-3c0 2 1 3 3 3v2c-3 0-4-2-4-5z" fill="currentColor"/></svg>
+          BibTeX
+        </a>
+      </div>
+
+      <p class="tldr">
+        <strong>TL;DR</strong>&nbsp; Language descriptions of atomic actions align <span class="c-human">human</span> and
+        <span class="c-robot">robot</span> latent actions <em>without paired data</em>, so egocentric human video can supervise the
+        same action expert that controls the robot&nbsp;&mdash; scaling robot policies along two axes: human-video
+        <strong>pre-training</strong> and task-specific human-demonstration <strong>post-training</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ STATS ============================ -->
+  <section class="stats-wrap">
+    <div class="container stats reveal">
+      <div class="stat">
+        <div class="stat-num"><span data-count="66.4" data-decimals="1">66.4</span><small>%</small></div>
+        <div class="stat-label">average success on RoboTwin&nbsp;2.0<br><span class="muted">best among VLAs, WAMs and latent action methods</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span data-count="72.5" data-decimals="1">72.5</span><small>%</small></div>
+        <div class="stat-label">real-robot average success<br><span class="muted">vs. 41.25% for GR00T N1.7</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span data-count="2678" data-decimals="0">2,678</span><small>h</small></div>
+        <div class="stat-label">egocentric human video in pre-training<br><span class="muted">no action labels, no annotations</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span data-count="63" data-decimals="0">63</span><small>-DoF</small></div>
+        <div class="stat-label">real-robot action space<br><span class="muted">incl. two 22-DoF dexterous hands</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ OVERVIEW ============================ -->
+  <section class="section" id="overview">
+    <div class="container">
+      <figure class="figure figure-wide reveal">
+        <img src="static/images/teaser.png" alt="Overview of SALA: unpaired human and robot videos related through language, a latent action space organized by action semantics, and human video scaling the robot policy." width="2400" height="725" data-zoom>
+        <figcaption>
+          <strong>Overview of SALA.</strong>
+          <b>Left:</b> unpaired human and robot videos are related only through language descriptions of their atomic actions.
+          <b>Middle:</b> supervising a latent action tokenizer with these relations organizes latent actions by action semantics rather than by scene.
+          <b>Right:</b> through the aligned latent actions, human videos supervise the same action expert that controls the robot: more human-video pre-training lowers the robot's action prediction error without additional robot data.
+        </figcaption>
+      </figure>
+
+      <div class="prose narrow reveal">
+        <h2 class="section-title">Abstract</h2>
+        <p>
+          Embodied foundation models hinge on diverse robot interaction data, which are costly to collect. Egocentric human videos offer a complementary source of experience, and latent action models (LAMs) provide a popular means of leveraging these videos for policy supervision. Compared with world-action models, LAMs can offer greater training efficiency&mdash;and potentially lower inference costs&mdash;by avoiding explicit pixel prediction during policy learning and execution. However, most existing LAMs learn latent actions solely through video reconstruction, which can cause their representations to cluster by visual appearance rather than by the underlying actions. As a result, they struggle to align human actions with their robot counterparts.
+        </p>
+        <p>
+          To bridge the gap, we introduce <strong>SALA</strong>, which emphasizes establishing the semantic correspondence for latent actions. Using only unpaired human and robot video clips, we leverage their language descriptions to estimate semantic similarities and supervise cross-embodiment correspondence. Specifically, we translate these similarities into soft neighborhood structures that guide human latent actions toward semantically related robot latents, while robot action reconstruction grounds the latent space in control.
+        </p>
+        <p>
+          The resulting shared latent action space provides a unified supervision signal for training a vision-language foundation model on both human and robot videos. Notably, latent action supervision enables scaling along two axes: (1) pre-training on increasing amounts of general human video consistently reduces robot action prediction error on downstream tasks, and (2) post-training on increasing amounts of task-specific human video substantially improves real-world robot task success rates.
+        </p>
+      </div>
+
+      <div class="insight reveal">
+        <div class="insight-card problem">
+          <div class="insight-kicker">The problem</div>
+          <h3>Reconstruction clusters by scene</h3>
+          <p>Reconstruction constrains each latent to explain the transition within its own clip, but never relates human and robot executions of the same behavior. Latents can be dominated by scene appearance, so semantically similar actions need not lie close together.</p>
+        </div>
+        <div class="insight-arrow" aria-hidden="true">
+          <svg viewBox="0 0 48 24"><path d="M2 12h40M34 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="insight-card idea">
+          <div class="insight-kicker">Our insight</div>
+          <h3>Language provides the correspondence</h3>
+          <p>Even when clips are recorded independently, descriptions such as <q>grasp the cup</q> relate a human clip to many robot clips with graded similarity. SALA turns these relations into soft neighborhood targets, anchored on robot latents grounded in control.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ METHOD ============================ -->
+  <section class="section section-tint" id="method">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Method</span>
+        <h2 class="section-title">A language-aligned tokenizer, then a latent-action-supervised policy</h2>
+        <p class="lead">SALA learns a latent action tokenizer aligned across embodiments by language supervision from atomic-action descriptions, and uses it to label human and robot videos as targets for a VLA policy.</p>
+      </div>
+
+      <figure class="figure figure-wide reveal">
+        <img src="static/images/method_overview.png" alt="Method overview: (a) language-aligned latent action tokenizer, (b) latent-action-supervised policy." width="2400" height="1063" loading="lazy" data-zoom>
+        <figcaption>
+          <b>(a) Latent action tokenizer.</b> <span class="c-robot">Robot</span> and <span class="c-human">human</span> clips share the visual encoder, the SoftVQ quantizer, and the visual decoder; only robot clips train the action decoder. Language similarities between atomic-action descriptions define soft neighborhoods that supervise the latent neighborhoods, with gradients stopped through robot latents.
+          <b>(b) VLA policy.</b> The frozen tokenizer labels each clip with latent action tokens; latent queries in the action expert predict them for both human and robot data, while robot data additionally train flow matching.
+        </figcaption>
+      </figure>
+
+      <div class="cards cards-3">
+        <article class="card reveal">
+          <div class="card-icon ic-robot" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9.5" cy="13.5" r="1.4" fill="currentColor"/><circle cx="14.5" cy="13.5" r="1.4" fill="currentColor"/><path d="M12 8V4.5M10 4.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Grounding latents in robot control</h3>
+          <p>Teleoperation data already provide ground-truth actions. A robot-only action decoder reconstructs the action chunk from the quantized latent and the initial state, which grounds robot latents directly in control.</p>
+          <div class="eq"><span class="L">ℒ</span><sub>act</sub> &nbsp;=&nbsp; Huber(<span class="v">a</span>, <i>G</i><sub>a</sub>(<span class="v">z̃</span>, <span class="v">s</span>))</div>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon ic-ours" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="17" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="12" r="2.4" fill="currentColor"/><path d="M8.3 7.8 15.8 11M8.3 16.2 15.8 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 2.4"/></svg>
+          </div>
+          <h3>Robot-anchored semantic transfer</h3>
+          <p>Each human clip gets a soft neighborhood <i>P</i><sub>i</sub> over the robot clips in a batch from language similarity, which supervises its latent neighborhood <i>Q</i><sub>i</sub>. A stop-gradient moves only human latents toward the control-grounded robot anchors.</p>
+          <div class="eq"><span class="L">ℒ</span><sub>align</sub> = 𝔼<sub>i</sub>[ CE( softmax<sub>j</sub>(<i>s</i><span class="ss"><sup>ℓ</sup><sub>ij</sub></span>), softmax<sub>j</sub>(<i>s</i><span class="ss"><sup>z</sup><sub>ij</sub></span>) ) ]</div>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon ic-teal" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 19V13M8 19V9M12 19V5M16 19V11M20 19V15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>SoftVQ for graded relations</h3>
+          <p>Hard VQ assigns a one-hot code that changes only when the latent switches codes. SoftVQ represents each token as a categorical distribution over the codebook, varying smoothly with the latent, so tokens can express graded differences.</p>
+          <div class="eq"><span class="L">ℒ</span><sub>tok</sub> = ½(<span class="L">ℒ</span><span class="ss"><sup>H</sup><sub>vis</sub></span> + <span class="L">ℒ</span><span class="ss"><sup>R</sup><sub>vis</sub></span>) + λ<sub>act</sub><span class="L">ℒ</span><sub>act</sub> + λ<sub>align</sub><span class="L">ℒ</span><sub>align</sub></div>
+        </article>
+      </div>
+
+      <div class="pipeline reveal">
+        <h3 class="pipeline-title">Policy training follows the availability of data</h3>
+        <p class="pipeline-sub">π<sub>0</sub>-style policy: Qwen3-VL-4B VLM + 0.6B action expert with learnable latent-action queries. The tokenizer needs only video frames to label a clip, so pre-training needs neither action labels nor atomic-action descriptions.</p>
+        <ol class="stages">
+          <li class="stage st-human">
+            <span class="stage-num">1</span>
+            <h4>Pre-training</h4>
+            <p class="stage-data"><span class="c-human">Action-free human videos</span></p>
+            <div class="stage-loss"><span class="L">ℒ</span><span class="ss"><sup>H</sup><sub>LA</sub></span></div>
+            <p>Predict the latent actions that the language-aligned teacher assigns; scales with the amount of available human video.</p>
+          </li>
+          <li class="stage st-robot">
+            <span class="stage-num">2</span>
+            <h4>Mid-training</h4>
+            <p class="stage-data"><span class="c-robot">Target-robot teleoperation</span></p>
+            <div class="stage-loss"><span class="L">ℒ</span><span class="ss"><sup>R</sup><sub>FM</sub></span> + λ<sub>LA</sub><span class="L">ℒ</span><span class="ss"><sup>R</sup><sub>LA</sub></span></div>
+            <p>Ground latent-action predictions in robot actions through flow matching.</p>
+          </li>
+          <li class="stage st-ours">
+            <span class="stage-num">3</span>
+            <h4>Post-training <span class="tag">optional</span></h4>
+            <p class="stage-data"><span class="c-robot">Task teleoperation</span> + <span class="c-human">human demos</span></p>
+            <div class="stage-loss"><span class="L">ℒ</span><span class="ss"><sup>R</sup><sub>FM</sub></span> + λ<sub>LA</sub>(<span class="L">ℒ</span><span class="ss"><sup>R</sup><sub>LA</sub></span> + <span class="L">ℒ</span><span class="ss"><sup>H</sup><sub>LA</sub></span>)</div>
+            <p>Human demonstrations need no robot to record, yet supervise the same action expert that controls the robot.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SIMULATION ============================ -->
+  <section class="section" id="simulation">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Effectiveness in simulation</span>
+        <h2 class="section-title">Turning another embodiment's videos into target-robot performance</h2>
+        <p class="lead">On RoboTwin 2.0 (50 bimanual tasks), videos of <span class="c-human">ARX-X5</span> stand in for human videos: 27,000 action-free trajectories (68 h), against only 2,500 <span class="c-robot">Aloha-AgileX</span> trajectories (9.2 h) with actions. We evaluate on Aloha-AgileX with 100 rollouts per task in clean and domain-randomized scenes.</p>
+      </div>
+
+      <figure class="figure reveal">
+        <img src="static/images/robotwin_embodiments.jpg" alt="The same RoboTwin task performed by the target embodiment Aloha-AgileX and the non-target embodiment ARX-X5." width="2188" height="333" loading="lazy" data-zoom>
+        <figcaption>Frames of the same task performed by the target embodiment <span class="c-robot">Aloha-AgileX</span> and the non-target embodiment <span class="c-human">ARX-X5</span>, whose videos form the action-free dataset.</figcaption>
+      </figure>
+
+      <div class="panel reveal">
+        <div class="panel-head">
+          <div>
+            <h3>Success rates on RoboTwin 2.0 (%)</h3>
+            <p class="muted small">Averaged over 50 tasks. WAMs and latent action methods are additionally trained on the ARX-X5 and Aloha-AgileX videos. <span class="pt-key">PT</span> = starts from official pre-trained weights.</p>
+          </div>
+          <div class="seg" role="tablist" aria-label="RoboTwin setting">
+            <button role="tab" class="seg-btn is-active" data-metric="avg" aria-selected="true">Average</button>
+            <button role="tab" class="seg-btn" data-metric="clean" aria-selected="false">Clean</button>
+            <button role="tab" class="seg-btn" data-metric="random" aria-selected="false">Random</button>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="sw sw-vla"></i>VLAs</span>
+          <span><i class="sw sw-wam"></i>World action models</span>
+          <span><i class="sw sw-lam"></i>Latent action methods</span>
+          <span><i class="sw sw-ours"></i>SALA (ours)</span>
+        </div>
+        <div class="hbars" id="robotwin-chart" aria-live="polite"></div>
+        <p class="panel-note">SALA is trained <strong>without</strong> pre-trained weights, yet achieves the highest Random and average success. FastWAM and OpenWAM rival SALA in Clean but collapse in Random, where domain randomization changes scene appearance&nbsp;&mdash; future-video prediction must also model the scene, whereas language-aligned latents are organized by action.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ REAL WORLD ============================ -->
+  <section class="section section-tint" id="real-world">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Scalability in the real world</span>
+        <h2 class="section-title">A 63-DoF humanoid with two dexterous hands</h2>
+        <p class="lead">We deploy SALA on a Sharpa North wheeled humanoid and study how it scales with egocentric human video at two levels: human-video pre-training up to 2,678 equivalent hours, and human demonstrations of each downstream task in post-training.</p>
+      </div>
+
+      <div class="platform reveal">
+        <div class="platform-img">
+          <img src="static/images/sharpa_robot.jpg" alt="The Sharpa North wheeled humanoid robot with two Sharpa Wave dexterous hands." width="900" height="1200" loading="lazy" data-zoom>
+        </div>
+        <div class="platform-info">
+          <h3>Sharpa North</h3>
+          <ul class="spec">
+            <li><span>Arms</span><b>two 7-DoF arms</b></li>
+            <li><span>Hands</span><b>two 22-DoF Sharpa Wave dexterous hands</b></li>
+            <li><span>Action</span><b>63-DoF joint space: arms, hands, torso &amp; neck</b></li>
+            <li><span>Control</span><b>chunks of 32 joint targets at 60&nbsp;Hz</b></li>
+            <li><span>Cameras</span><b>head stereo + two wrist fisheye, 30&nbsp;Hz</b></li>
+          </ul>
+          <div class="data-table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Data</th><th>Embodiment</th><th>Actions</th><th>Lang.</th><th class="num">Traj.</th><th class="num">Hours</th></tr></thead>
+              <tbody>
+                <tr><td><i class="c-human">D<sub>H</sub></i></td><td class="c-human">Human</td><td>✗</td><td>partial</td><td class="num">71,582</td><td class="num">2,678</td></tr>
+                <tr><td><i class="c-human">D<span class="ss"><sup>tok</sup><sub>H</sub></span></i></td><td class="c-human">Human</td><td>✗</td><td>✓</td><td class="num">27,406</td><td class="num">983</td></tr>
+                <tr><td><i class="c-robot">D<sub>R</sub></i></td><td class="c-robot">Sharpa North</td><td>✓</td><td>✓</td><td class="num">70,859</td><td class="num">888</td></tr>
+              </tbody>
+            </table>
+            <p class="muted small">Atomic-action descriptions are used only to train the tokenizer, so only the subset D<span class="ss"><sup>tok</sup><sub>H</sub></span> of human video is annotated. Human-video hours denote equivalent training exposure.</p>
+          </div>
+        </div>
+      </div>
+
+      <figure class="figure figure-wide reveal">
+        <img src="static/images/real_data.jpg" alt="Real-world data: human videos and robot teleoperation for pre- and mid-training; human demonstrations and teleoperated demonstrations for post-training." width="2400" height="734" loading="lazy" data-zoom>
+        <figcaption><b>Real-world data.</b> Left: large-scale egocentric <span class="c-human">human videos</span> and <span class="c-robot">robot teleoperation</span> for pre- and mid-training. Right: each downstream task is recorded both as human demonstrations, which need no robot, and as teleoperated demonstrations.</figcaption>
+      </figure>
+
+      <div class="panel reveal">
+        <div class="panel-head">
+          <div>
+            <h3>Real-world success rates (%)</h3>
+            <p class="muted small">20 trials per task. All methods are post-trained on the same teleoperated demonstrations; the vanilla VLA shares our architecture but removes latent actions, so it cannot learn from human videos.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="sw sw-gray2"></i>Vanilla VLA</span>
+          <span><i class="sw sw-gray"></i>GR00T N1.7</span>
+          <span><i class="sw sw-ours"></i>SALA (ours)</span>
+        </div>
+        <div class="vbars" id="real-chart"></div>
+      </div>
+
+      <div class="task-tabs reveal">
+        <h3 class="sub-title">Four downstream tasks</h3>
+        <div class="seg seg-wrap" role="tablist" aria-label="Real-world task">
+          <button role="tab" class="seg-btn is-active" data-task="0" aria-selected="true">Gear assembly</button>
+          <button role="tab" class="seg-btn" data-task="1" aria-selected="false">Bimanual pouring</button>
+          <button role="tab" class="seg-btn" data-task="2" aria-selected="false">Flower insertion</button>
+          <button role="tab" class="seg-btn" data-task="3" aria-selected="false">Spoon scooping</button>
+        </div>
+        <div class="task-view">
+          <div class="task-strip" id="task-strip" role="img" aria-label="Frames of one teleoperated demonstration of the selected task"></div>
+          <div class="task-meta" id="task-meta"></div>
+        </div>
+      </div>
+
+      <figure class="figure figure-wide reveal">
+        <img src="static/images/scaling_pre_post.png" alt="Scaling with human video: (a) validation L1 error versus human-video pre-training hours; (b) success rate versus fraction of human demonstrations in post-training." width="2400" height="771" loading="lazy" data-zoom>
+        <figcaption><b>Scaling with human video</b>, averaged over four tasks. <b>(a)</b> Pre-training: validation L1 error of predicted actions on the joints each task uses, versus the human-video pre-training budget; gray dashed is the vanilla VLA. <b>(b)</b> Post-training: success rate versus the fraction of each task's human demonstrations, with teleoperated demonstrations fixed.</figcaption>
+      </figure>
+
+      <div class="cards cards-2">
+        <article class="card axis reveal">
+          <div class="axis-badge">Axis 1</div>
+          <h3>More human video in pre-training</h3>
+          <p>With budgets of 0, 473, 1,103, and 2,678 equivalent hours, the robot's validation action error decreases with <strong>every</strong> increase&nbsp;&mdash; with no additional robot data, since all models share the same teleoperation data in mid- and post-training. Even the 0&nbsp;h variant beats the vanilla VLA, because predicting control-grounded latents shapes the representations of the action expert.</p>
+        </article>
+        <article class="card axis reveal">
+          <div class="axis-badge">Axis 2</div>
+          <h3>More human demos in post-training</h3>
+          <p>Keeping the teleoperated demonstrations fixed, post-training with 25%, 50%, and 100% of each task's human demonstrations steadily raises the average success rate. Human demonstrations need no robot to record, so collecting more of them is an inexpensive way to improve a task, complementary to teleoperation.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ ANALYSIS ============================ -->
+  <section class="section" id="analysis">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Analysis</span>
+        <h2 class="section-title">Language alignment organizes latents by action, not by scene</h2>
+        <p class="lead">Without alignment, ARX-X5 clips of the same task split by scene type with actions mixed. With alignment, they split by atomic action across scenes: the median latent variance explained by the action rises from <b>0.41&nbsp;→&nbsp;0.67</b>, and by the scene drops from <b>0.14&nbsp;→&nbsp;0.04</b>.</p>
+      </div>
+
+      <figure class="figure figure-wide reveal">
+        <img src="static/images/scene_pairs.png" alt="PCA of latent actions without and with language alignment, and the variance explained by scene and by action." width="2200" height="1185" loading="lazy" data-zoom>
+        <figcaption><b>(a)</b> For four RoboTwin 2.0 tasks, ARX-X5 latents of two atomic actions, 20 clips per action and scene type, projected to 2D by PCA. Color: action; marker: scene type. <b>(b)</b> Fraction of latent variance explained by scene and by action across all analyzed pairs; thick lines show medians.</figcaption>
+      </figure>
+
+      <div class="panel reveal" id="retrieval">
+        <div class="panel-head">
+          <div>
+            <h3>Cross-embodiment retrieval</h3>
+            <p class="muted small">Each query (left) and its three nearest target-robot clips over all tasks, under the reconstruction-only tokenizer (middle) and SALA (right). Examples are selected.</p>
+          </div>
+          <div class="seg seg-wrap" role="tablist" aria-label="Retrieval setting">
+            <button role="tab" class="seg-btn is-active" data-retr="0" aria-selected="true">Human → robot, unseen tasks</button>
+            <button role="tab" class="seg-btn" data-retr="1" aria-selected="false">Human → robot, shared tasks</button>
+            <button role="tab" class="seg-btn" data-retr="2" aria-selected="false">ARX-X5 → Aloha (sim)</button>
+          </div>
+        </div>
+        <figure class="figure figure-flat">
+          <img id="retr-img" src="static/images/retrieval_human_unseen.jpg" alt="Retrieval for human clips of tasks absent from the robot data." width="2070" height="1621" loading="lazy" data-zoom>
+          <figcaption id="retr-cap"></figcaption>
+        </figure>
+        <div class="table-scroll">
+          <table class="tbl tbl-center">
+            <thead>
+              <tr><th class="left">Top-1 retrieval over all tasks</th><th>Random</th><th>Recon. only</th><th class="hl">+ Lang. align.</th><th>Language</th></tr>
+            </thead>
+            <tbody>
+              <tr class="grp"><td colspan="5">RoboTwin 2.0: <span class="c-human">ARX-X5</span> → <span class="c-robot">Aloha-AgileX</span></td></tr>
+              <tr><td class="left">Same atomic action (%) ↑</td><td>0.8</td><td>41.3</td><td class="hl"><b>78.2</b></td><td>&ndash;</td></tr>
+              <tr><td class="left">End-effector displacement error (cm) ↓</td><td>8.03</td><td>2.89</td><td class="hl"><b>2.58</b></td><td>&ndash;</td></tr>
+              <tr class="grp"><td colspan="5">Real world: <span class="c-human">human</span> → <span class="c-robot">robot</span>, shared tasks</td></tr>
+              <tr><td class="left">Same task (%) ↑</td><td>1.7</td><td>3.8</td><td class="hl"><b>34.2</b></td><td>55.0</td></tr>
+              <tr><td class="left">Same verbs of both hands (%) ↑</td><td>4.1</td><td>6.2</td><td class="hl"><b>17.0</b></td><td>66.4</td></tr>
+              <tr><td class="left">Language similarity ↑</td><td>0.00</td><td>0.04</td><td class="hl"><b>0.32</b></td><td>1.00</td></tr>
+              <tr class="grp"><td colspan="5">Real world: <span class="c-human">human</span> → <span class="c-robot">robot</span>, tasks absent from robot data</td></tr>
+              <tr><td class="left">Language similarity ↑</td><td>0.00</td><td>0.06</td><td class="hl"><b>0.31</b></td><td>1.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted small">Language similarity is rescaled so that Random scores 0 and retrieval by atomic-action descriptions scores 1. Language retrieval is omitted on RoboTwin 2.0, where scripted descriptions of the same atomic action are identical.</p>
+      </div>
+
+      <div class="ablation reveal">
+        <div class="panel ablation-table">
+          <h3>Tokenizer ablations</h3>
+          <p class="muted small">Success rates (%) on Aloha-AgileX; each variant changes one design choice and the policy is trained identically.</p>
+          <div class="abl" id="ablation-chart"></div>
+          <ul class="abl-notes">
+            <li><b>w/o alignment</b> (λ<sub>align</sub>=0): reconstruction alone does not provide the correspondence; the drop is largest in Random, where scenes vary.</li>
+            <li><b>w/o stop-gradient</b>: bidirectional alignment pulls robot latents toward human latents that lack action supervision, compromising control.</li>
+          </ul>
+        </div>
+        <figure class="panel figure-flat ablation-fig">
+          <h3>SoftVQ vs. hard VQ</h3>
+          <img src="static/images/quantizer_losses.png" alt="Alignment loss and visual reconstruction loss during tokenizer training with SoftVQ and hard VQ." width="1400" height="756" loading="lazy" data-zoom>
+          <figcaption>SoftVQ reduces (a) the alignment loss, whereas hard VQ keeps it near the value of a uniform prediction, although both reach comparable (b) visual reconstruction losses.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ BIBTEX ============================ -->
+  <section class="section section-tint" id="bibtex">
+    <div class="container narrow">
+      <h2 class="section-title reveal">BibTeX</h2>
+      <!-- TODO: update authors and venue once the paper is public -->
+      <div class="bib reveal">
+        <button class="copy-btn" type="button" data-copy="#bib-text" aria-label="Copy BibTeX">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          <span>Copy</span>
+        </button>
+<pre id="bib-text"><code>@article{sala2026,
+  title   = {SALA: Semantically Aligned Latent Actions Enable
+             Dual-Axis Scaling of Embodied Foundation Models},
+  author  = {Your Name and Your Name and Your Name and Your Name},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <img src="static/images/sharpa-logo.png" alt="Sharpa" width="110" height="22">
+    <p class="muted small">&copy; 2026 Sharpa. Page font: Inter (SIL Open Font License).</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged figure" hidden>
+  <button class="lightbox-close" type="button" aria-label="Close">&times;</button>
+  <img alt="">
+</div>
+
+<script src="static/js/main.js"></script>
+</body>
+</html>
