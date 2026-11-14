@@ -1,0 +1,5 @@
+KaTeX 0.19.1
+Source: https://registry.npmjs.org/katex/-/katex-0.19.1.tgz
+Documentation: https://katex.org/docs/browser.html
+License: MIT (see LICENSE).
+The distribution files and fonts are hosted locally.

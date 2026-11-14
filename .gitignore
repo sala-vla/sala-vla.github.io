@@ -1,0 +1,6 @@
+# Local source compilation; the site uses the four independent 1x clips.
+/demo/SALA_all_tasks.mp4
+
+# Python build and preview artifacts.
+__pycache__/
+*.py[cod]

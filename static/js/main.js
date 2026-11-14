@@ -4,6 +4,24 @@
   document.documentElement.classList.remove("no-js");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Render the paper's equations as selectable HTML and accessible MathML.
+  if (window.katex) {
+    document.querySelectorAll('.math').forEach(function (node) {
+      var source = node.textContent.trim();
+      try {
+        window.katex.render(source, node, {
+          displayMode: node.classList.contains('math-display'),
+          output: 'htmlAndMathml',
+          throwOnError: true,
+          trust: false
+        });
+      } catch (error) {
+        node.classList.add('math-error');
+        console.error('Could not render equation:', source, error);
+      }
+    });
+  }
+
   // ---------------------------------------------------------------- data
   // RoboTwin 2.0 success rates (%), Table "Success rates on RoboTwin 2.0".
   var ROBOTWIN = [
@@ -12,11 +30,11 @@
     { name: "FastWAM", type: "wam", pt: false, clean: 79.4, random: 3.2, avg: 41.3 },
     { name: "LingBot-VA", type: "wam", pt: true, clean: 75.8, random: 38.4, avg: 57.1 },
     { name: "InternVLA-A1.5", type: "wam", pt: false, clean: 67.8, random: 40.1, avg: 54.0 },
-    { name: "OpenWAM", type: "wam", pt: false, clean: 86.8, random: 3.9, avg: 45.0 },
+    { name: "OpenWAM", type: "wam", pt: false, clean: 86.8, random: 3.9, avg: 45.4 },
     { name: "UniVLA", type: "lam", pt: true, clean: 48.6, random: 5.6, avg: 27.1 },
     { name: "UniT", type: "lam", pt: false, clean: 47.5, random: 7.2, avg: 27.4 },
     { name: "RotVLA", type: "lam", pt: true, clean: 74.4, random: 28.0, avg: 51.2 },
-    { name: "SALA (ours)", type: "ours", pt: false, clean: 80.2, random: 48.6, avg: 66.4 }
+    { name: "SALA (ours)", type: "ours", pt: false, clean: 80.2, random: 48.6, avg: 64.4 }
   ];
   var TYPE_COLOR = { vla: "var(--vla)", wam: "var(--wam)", lam: "var(--lam)", ours: "var(--ours)" };
 
@@ -58,17 +76,17 @@
 
   var RETRIEVAL = [
     {
-      src: "static/images/retrieval_human_unseen.jpg", w: 2070, h: 1621,
+      src: "static/images/retrieval_human_unseen.jpg", w: 2070, h: 1570,
       alt: "Retrieval for human clips of tasks absent from the robot data.",
       cap: "Human queries from the pre-training videos, of tasks <b>absent from the robot data</b>. The reconstruction-only tokenizer returns unrelated robot clips; SALA returns semantically related behaviors&nbsp;&mdash; e.g., a human sweeping the floor retrieves the robot sweeping trash into a dustpan. Each clip is labeled with its task (italic) and the atomic action of its active hand."
     },
     {
-      src: "static/images/retrieval_human_shared.jpg", w: 2070, h: 1067,
+      src: "static/images/retrieval_human_shared.jpg", w: 2070, h: 1042,
       alt: "Retrieval for human clips of tasks shared with the robot data.",
       cap: "Real world, <b>shared tasks</b>: human queries and Sharpa North clips. ✓/✗ mark whether the task and verb match the query. Human and robot videos differ in viewpoint, embodiment, and background, so reconstruction alone is close to random."
     },
     {
-      src: "static/images/retrieval_robotwin.jpg", w: 2070, h: 1067,
+      src: "static/images/retrieval_robotwin.jpg", w: 2070, h: 1039,
       alt: "Retrieval on RoboTwin 2.0 from ARX-X5 queries to Aloha-AgileX clips.",
       cap: "RoboTwin 2.0: ARX-X5 queries and Aloha-AgileX clips. ✓/✗ mark whether the atomic action matches the query. Alignment raises same-atomic-action retrieval from 41.3% to 78.2%, with gains in all 47 tasks."
     }
@@ -144,31 +162,12 @@
     reveals.forEach(function (r) { r.classList.add("is-visible"); });
   }
 
-  // ---------------------------------------------------------------- stat count-up
-  document.querySelectorAll("[data-count]").forEach(function (node) {
-    var target = parseFloat(node.getAttribute("data-count"));
-    var decimals = parseInt(node.getAttribute("data-decimals") || "0", 10);
-    var render = function (v) {
-      node.textContent = v.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-    };
-    if (reduceMotion) { render(target); return; }
-    render(0);
-    whenVisible(node, function () {
-      var t0 = performance.now(), dur = 1200;
-      (function step(now) {
-        var p = Math.min(1, (now - t0) / dur);
-        render(target * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) requestAnimationFrame(step);
-      })(t0);
-    });
-  });
-
   // ---------------------------------------------------------------- RoboTwin chart
   var rtChart = document.getElementById("robotwin-chart");
   if (rtChart) {
     var rows = ROBOTWIN.map(function (d) {
       var row = el("div", "hbar" + (d.type === "ours" ? " is-ours" : ""));
-      var name = el("div", "hbar-name", d.name + (d.pt ? ' <span class="pt-key" title="starts from official pre-trained weights">PT</span>' : ""));
+      var name = el("div", "hbar-name", d.name + (d.pt ? ' <span class="pt-key" title="initialized from an official checkpoint pre-trained on large-scale robot data">PT</span>' : ""));
       var track = el("div", "hbar-track");
       var fill = el("div", "hbar-fill");
       fill.style.background = TYPE_COLOR[d.type];
@@ -339,5 +338,131 @@
         fallback();
       }
     });
+  });
+})();
+
+// Background demo: loop at the supplied 4× speed, with an explicit pause control.
+(function () {
+  var video = document.getElementById('hero-video');
+  var button = document.querySelector('.hero-video-toggle');
+  if (!video || !button) return;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var playbackWanted = !reducedMotion.matches;
+  var inView = true;
+  video.muted = true;
+  video.autoplay = playbackWanted;
+  button.hidden = false;
+
+  function updateButton() {
+    button.textContent = video.paused ? 'Play video' : 'Pause video';
+    button.setAttribute('aria-label', video.paused ? 'Play background video' : 'Pause background video');
+  }
+  function updatePlayback() {
+    if (playbackWanted && inView && !document.hidden) {
+      video.play().catch(updateButton);
+    } else {
+      video.pause();
+    }
+    updateButton();
+  }
+  button.addEventListener('click', function () {
+    playbackWanted = video.paused;
+    updatePlayback();
+  });
+  video.addEventListener('play', updateButton);
+  video.addEventListener('pause', updateButton);
+  document.addEventListener('visibilitychange', updatePlayback);
+  reducedMotion.addEventListener('change', function () {
+    playbackWanted = !reducedMotion.matches;
+    updatePlayback();
+  });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      inView = entries[0].isIntersecting;
+      updatePlayback();
+    }).observe(document.getElementById('paper'));
+  }
+  updatePlayback();
+})();
+
+// Each selectable task has independent real-time and 4× clips; no automatic next task.
+(function () {
+  var video = document.getElementById('demonstration-video');
+  if (!video) return;
+  var tasks = { gear: 'Gear assembly', pour: 'Bimanual pouring', flower: 'Flower insertion', spoon: 'Spoon scooping' };
+  var taskButtons = Array.from(document.querySelectorAll('[data-demo-task]'));
+  var speedButtons = Array.from(document.querySelectorAll('[data-demo-speed]'));
+  var taskLabel = document.getElementById('demo-task-label');
+  var speedLabel = document.getElementById('demo-speed-label');
+  var message = document.getElementById('demo-message');
+  var activeTask = 'gear';
+  var activeSpeed = '4';
+  var pending = null;
+  video.loop = false;
+
+  function setSelection(task, speed) {
+    taskButtons.forEach(function (button) {
+      var selected = button.dataset.demoTask === task;
+      button.classList.toggle('is-active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    speedButtons.forEach(function (button) {
+      var selected = button.dataset.demoSpeed === speed;
+      button.classList.toggle('is-active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    taskLabel.textContent = tasks[task];
+  }
+  function selectClip(task, speed) {
+    var previousTask = pending ? pending.task : activeTask;
+    var previousSpeed = pending ? pending.speed : activeSpeed;
+    if (task === previousTask && speed === previousSpeed && !video.error) return;
+    var progress = 0;
+    if (task === previousTask) {
+      progress = pending ? pending.progress : (Number.isFinite(video.duration) && video.duration > 0 ? video.currentTime / video.duration : 0);
+    }
+    var wasPlaying = pending ? pending.wasPlaying : !video.paused;
+    var source = new URL('demo/' + task + '_' + speed + 'x.mp4', document.baseURI).href;
+    pending = { task: task, speed: speed, source: source, progress: progress, wasPlaying: wasPlaying };
+    setSelection(task, speed);
+    message.hidden = true;
+    speedLabel.textContent = 'Loading ' + speed + '×…';
+    video.setAttribute('aria-busy', 'true');
+    video.poster = 'static/images/demo-' + task + (speed === '1' ? '-1x' : '') + '.jpg';
+    video.querySelector('a').href = source;
+    video.src = source;
+    video.load();
+  }
+  taskButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      selectClip(button.dataset.demoTask, pending ? pending.speed : activeSpeed);
+    });
+  });
+  speedButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      selectClip(pending ? pending.task : activeTask, button.dataset.demoSpeed);
+    });
+  });
+  video.addEventListener('loadedmetadata', function () {
+    if (!pending || video.currentSrc !== pending.source) return;
+    var selection = pending;
+    pending = null;
+    activeTask = selection.task;
+    activeSpeed = selection.speed;
+    video.defaultPlaybackRate = 1;
+    video.playbackRate = 1;
+    if (selection.progress > 0 && Number.isFinite(video.duration)) {
+      video.currentTime = Math.min(selection.progress * video.duration, Math.max(0, video.duration - 0.05));
+    }
+    video.setAttribute('aria-busy', 'false');
+    video.setAttribute('aria-label', tasks[activeTask] + ' at ' + activeSpeed + ' times speed');
+    speedLabel.textContent = activeSpeed === '1' ? '1× · Real time' : '4× speed';
+    if (selection.wasPlaying) video.play().catch(function () {});
+  });
+  video.addEventListener('error', function () {
+    video.setAttribute('aria-busy', 'false');
+    speedLabel.textContent = 'Video unavailable';
+    message.textContent = 'The video could not be loaded. Select a task or playback speed to try again.';
+    message.hidden = false;
   });
 })();
