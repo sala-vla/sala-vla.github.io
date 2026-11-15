@@ -14,7 +14,7 @@
   <link rel="icon" href="data:,">
   <link rel="preload" href="static/fonts/Inter-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="static/vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="static/css/style.css?v=7ef25259ee93">
+  <link rel="stylesheet" href="static/css/style.css?v=e9adcc3d9c84">
 </head>
 <body>
 
@@ -85,6 +85,10 @@
       <button class="hero-video-toggle" type="button" aria-controls="hero-video" aria-label="Pause background video" hidden>Pause video</button>
     </div>
   </section>
+
+  <div class="container promo">
+    <video class="promo-player" id="promo-video" width="1600" height="900" controls playsinline preload="metadata" poster="static/images/sala-promo.jpg" src="demo/SALA-promo.mp4" aria-label="SALA project video"></video>
+  </div>
 
   <!-- ============================ OVERVIEW ============================ -->
   <section class="overview-section" id="overview" aria-labelledby="summary-label">
@@ -277,15 +281,17 @@
         <div class="panel-head">
           <div>
             <h3>Real-world success rates (%)</h3>
-            <p class="muted small">20 trials per task. All methods are post-trained on the same teleoperated demonstrations; the vanilla VLA shares our architecture but removes latent actions, so it cannot learn from human videos.</p>
+            <p class="muted small">Each method was evaluated in 20 trials per task. All four methods used the same teleoperated demonstrations for post-training. OpenWAM-α and SALA also used task-specific human demonstrations.</p>
           </div>
         </div>
         <div class="legend">
           <span><i class="sw sw-gray2"></i>Vanilla VLA</span>
           <span><i class="sw sw-gray"></i>GR00T N1.7</span>
+          <span><i class="sw sw-wam"></i>OpenWAM-α</span>
           <span><i class="sw sw-ours"></i>SALA (ours)</span>
         </div>
         <div class="vbars" id="real-chart"></div>
+        <p class="panel-note">SALA achieved 72.50% average success across the four tasks, 8.75 percentage points above OpenWAM-α (63.75%). Both succeeded in 16 of 20 spoon-scooping trials.</p>
       </div>
 
       <div class="task-tabs reveal">
@@ -462,6 +468,6 @@
 </div>
 
 <script src="static/vendor/katex/katex.min.js"></script>
-<script src="static/js/main.js?v=0aff732d913d"></script>
+<script src="static/js/main.js?v=226108b5399e"></script>
 </body>
 </html>

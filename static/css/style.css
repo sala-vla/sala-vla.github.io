@@ -148,6 +148,8 @@ sub, sup { font-size: 0.68em; line-height: 0; }
 .btn.is-soon:hover { transform: none; }
 .btn:not(.is-soon) em { display: none; }
 /* ---------- overview: a single summary, figure and optional abstract ---------- */
+.promo { padding-top: clamp(16px, 3vw, 36px); }
+.promo-player { display: block; width: 100%; height: auto; border-radius: var(--radius); background: #071a15; }
 .overview-section { padding: 60px 0 48px; }
 .intro-summary { max-width: 980px; margin: 0 0 40px; text-align: left; }
 .summary-label { display: flex; align-items: center; justify-content: flex-start; gap: 12px; font-size: 0.7rem; line-height: 1.5; font-weight: 600; letter-spacing: 0.14em; color: var(--muted); }
@@ -424,7 +426,7 @@ sub, sup { font-size: 0.68em; line-height: 0; }
   .panel { padding: 20px 16px; }
   .hbar { grid-template-columns: 112px 1fr 46px; gap: 8px; }
   .hbar-name { font-size: 0.82rem; }
-  .vbars { gap: 6px; }
+  .vbars { grid-template-columns: repeat(auto-fit, minmax(min(132px, 100%), 1fr)); gap: 24px 10px; }
   .vgroup-bars { height: 170px; gap: 3px; }
   .vbar span { font-size: 0.66rem; }
   .vgroup-label { font-size: 0.74rem; }

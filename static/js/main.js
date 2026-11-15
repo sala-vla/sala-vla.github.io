@@ -43,6 +43,7 @@
   var REAL = [
     { name: "Vanilla VLA", color: "var(--gray2)", vals: [40, 25, 20, 25, 27.5] },
     { name: "GR00T N1.7", color: "var(--gray)", vals: [45, 50, 30, 40, 41.25] },
+    { name: "OpenWAM-α", color: "var(--wam)", vals: [60, 75, 40, 80, 63.75] },
     { name: "SALA (ours)", color: "var(--ours)", vals: [75, 80, 55, 80, 72.5], ours: true }
   ];
 
